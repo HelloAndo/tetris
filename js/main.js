@@ -8,16 +8,16 @@ $(window).keyup(function(event) {
 
 var graphJson={
 	'1': {
-		'1': [
+		'0': [
 			[1,1], [2,0], [2,1], [2,2]
 		],
-		'2': [
+		'1': [
 			[0,0], [1,0], [1,1], [2,0]
 		],
-		'3': [
+		'2': [
 			[1,0], [1,1], [1,2], [2,1]
 		],
-		'4': [
+		'3': [
 			[0,1], [1,0], [1,1], [2,1]
 		],
 		'color': 'yellow'
@@ -27,8 +27,11 @@ var graphJson={
 function Tetris(){
 
 	this.size = [22, 15];	//游戏地图的size
+	this.tetris;		//这一回合的方块对象,jQuery对象
 	this.type = 1;		//方块形态
-	this.count;		//按键控制变形，次数缓存
+	this.timer = null;		//方块自由降落计时器
+	this.initShape;		//创建时的初始形态数值
+
 
 
 	this.createMap();
@@ -39,44 +42,70 @@ function Tetris(){
 Tetris.prototype = {
 
 	createMap: function(  ){
-		this.createTd( $('.map'), this.size[0], this.size[1]);
+		this.createSquare( $('.map'), this.size[0], this.size[1]);
 
 	},
 
 	createTetris: function(){
-		this.createTd( $('.tetris'), 3, 3);
-		this.colorTetris();
+		this.tetris = this.createSquare( $('.tetris'), 3, 3);
+console.log(this.tetris)
+		this.initShape = this.getRandomNum( 0, 3 )
+		this.colorTetris( graphJson[ this.type ][ this.initShape ] );
+		// this.autoDrop();
 	},
 
-	createTd: function($obj, row, col){
+	createSquare: function($obj, row, col){
 		for (var i = 0; i < row; i++) {
-			var tr = document.createElement('tr');
+			var div = document.createElement('div');
 			for(var j = 0; j < col; j++){
-				var td = document.createElement('td');
-				tr.appendChild(td);
+				var span = document.createElement('span');
+				div.appendChild(span);
 			}
-			$obj.append(tr);
+			$obj.append(div);
 		}
+		return $obj ;
 	},
 
-	colorTetris: function(){
-		var array = graphJson[ this.type ][ this.getRandomNum( 1, 4 ) ];
-console.log(array.length)
-		for(var i = 0, len = array.length; i < len; i++ ){
-			$('.tetris tr').eq( array[i][0] ).find('td').eq( array[i][1] ).addClass( graphJson[ this.type ]['color'] );
+	colorTetris: function( colorArray ){
+
+		$('.tetris span').removeClass();
+		for(var i = 0, len = colorArray.length; i < len; i++ ){
+			$('.tetris>div').eq( colorArray[i][0] ).find('span').eq( colorArray[i][1] ).addClass( graphJson[ this.type ]['color'] );
 
 		}
 
+	},
+
+	changeShape: function(){
+		var that = this ,
+			colorArray ;
+		this.initShape = 0;
+		$(window).keyup(function(event) {
+			if( event.which == 32 ){
+				that.initShape++;
+// console.log(event.which)
+				colorArray = graphJson[ that.type ][ that.initShape % 4 ];
+				that.colorTetris( colorArray );
+			}
+		});
+	},
+
+	autoDrop: function(){
+		var that = this;
+		this.timer = setInterval(function(){
+			that.tetris.css({top: '+=' + 30});
+			
+		}, 1000);
 	},
 
 	getRandomNum: function(min, max){
 		return Math.floor( Math.random() * ( max - min + 1 ) + min );
-	},
+	}
 
 };
 
 
 var tetris = new Tetris();
-// tetris.colorTetris();
+tetris.changeShape();
 
 });
