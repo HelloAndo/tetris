@@ -1,8 +1,8 @@
 $(function(){
 
-$(window).keyup(function(event) {
-	console.log(event)
-});
+// $(window).keyup(function(event) {
+// 	console.log(event)
+// });
 
 // "1"——"凸"字形，形态数组的第一个坐标数字约定为纵坐标，与tr绑定
 
@@ -34,11 +34,14 @@ function Tetris(){
 	this.colorClass;
 	this.mapArray;		//地图信息数组，有方块的格子其值为1，反之为0
 	this.speed;			//水平方向的速度，左为-1，右为1
-	this.moveDelayTime = 200;		//垂直移动默认的时间间隔
+	this.moveDelayTime = 1000;		//垂直移动默认的时间间隔
 	this.colorArray;				//$('.tetris')颜色数组
 	this.colorArrayLen;				//颜色数组长度
+
+	// 初始化函数
 	this.createMap();
 	this.createTetris();
+	this.manualCtrl();
 
 }
 
@@ -55,6 +58,15 @@ Tetris.prototype = {
 
 	},
 
+	reloadTetris: function(){
+		$('.tetris').empty();
+		this.createTetris();
+		this.tetris.css({
+			left: '0px',
+			top: '0px'
+		});
+	},
+
 	createMap: function(  ){
 		this.createSquare( $('.map'), this.size[0], this.size[1]);
 		$('.map').find('div').addClass('mapDiv');
@@ -64,10 +76,12 @@ Tetris.prototype = {
 
 	createTetris: function(){
 		this.tetris = this.createSquare( $('.tetris'), 3, 3);		//创建.tetris的子元素并返回$('.tetris')
-		this.shape = this.getRandomNum( 0, 3 );						//随机创建$('.tetris')的形态
-		this.colorArrayLen = graphJson[ this.type ][ this.shape ] ;	//颜色数组的长度
-		this.colorTetris( graphJson[ this.type ][ this.shape ] );	//根据$('.tetris')的形态绘画颜色
-		this.autoDrop();  											//初始化方块自由落体
+		// this.shape = this.getRandomNum( 0, 3 );						//随机创建$('.tetris')的形态
+		this.shape = 1;	
+		this.colorArray = graphJson[ this.type ][ this.shape ] ;	
+		this.colorArrayLen = this.colorArray.length ;				//颜色数组的长度
+		this.colorTetris(  );	//根据$('.tetris')的形态绘画颜色
+		// this.autoDrop();  											//初始化方块自由落体
 
 	},
 
@@ -83,11 +97,11 @@ Tetris.prototype = {
 		return $obj ;
 	},
 
-	colorTetris: function( colorArray ){
+	colorTetris: function(  ){
 		this.colorClass = graphJson[ this.type ]['color'] ;
 		$('.tetris span').removeClass();
-		for(var i = 0, len = colorArray.length; i < len; i++ ){
-			$('.tetris>div').eq( colorArray[i][0] ).find('span').eq( colorArray[i][1] ).addClass( this.colorClass );
+		for(var i = 0, len = this.colorArrayLen; i < len; i++ ){
+			$('.tetris>div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass( this.colorClass );
 
 		}
 
@@ -96,36 +110,44 @@ Tetris.prototype = {
 	colorMap: function(){
 
 		var tetrisCol = this.tetris.position().left / 30 ,
-			tetrisRow = this.tetris.position().top / 30 ,
-			colorArray = graphJson[ this.type ][ this.shape ] ;
-		for(var i = 0, len = colorArray.length; i < len; i++ ){
-			$('.mapDiv').eq( colorArray[i][0] + tetrisRow ).find('span').eq( colorArray[i][1] + tetrisCol ).addClass( this.colorClass );
-			this.mapArray[ colorArray[i][0] + tetrisRow ][ colorArray[i][1] + tetrisCol ] = 1;
+			tetrisRow = this.tetris.position().top / 30 ;
+
+		for(var i = 0; i < this.colorArrayLen; i++ ){
+			$('.mapDiv').eq( this.colorArray[i][0] + tetrisRow ).find('span').eq( this.colorArray[i][1] + tetrisCol ).addClass( this.colorClass );
+			this.mapArray[ this.colorArray[i][0] + tetrisRow ][ this.colorArray[i][1] + tetrisCol ] = 1;
 		}
 
 	},
 
-	//键盘控制$('.tetris')形态改变，调用colorTetris
-	changeShape: function(){
-		var that = this ,
-			colorArray ;
-		// this.     = 0;
-		$(window).keyup(function(event) {
-			if( event.which == 32 ){
-				that.shape++;
-// console.log(event.which)
-				colorArray = graphJson[ that.type ][ that.shape % 4 ];
-				that.colorTetris( colorArray );
-			}
-		});
-	},
 
-	changeSpeed: function(){
-
+	manualCtrl: function(){
+		var that = this;
+		var colorArray ;
 		$(window).keyup(function(event) {
 			switch( event.which ){
+				case 32:
+					that.shape++ ;
+					that.shape %= 4;
+					that.colorArray = graphJson[ that.type ][ that.shape ];
+					that.colorArrayLen = that.colorArray.length ;
+					that.colorTetris(  );
 				case 37:
-					
+					if( !that.isTouchLeft() ){
+						that.tetris.css('left', '-=' + 30);
+					}
+					break;
+				case 39:
+					if( !that.isTouchRight() ){
+						that.tetris.css('left', '+=' + 30);
+					}
+					break;
+				case 40:
+					if( !that.isTouchDown() ){
+						that.tetris.css('top', '+=' + 30);
+					}
+					break;
+				default:
+					break;
 			}
 		});
 
@@ -134,7 +156,7 @@ Tetris.prototype = {
 	autoDrop: function(){
 		var that = this;
 		this.timer = setInterval(function(){
-			that.isTouch() ? ( clearInterval( that.timer ), that.colorMap() ) : that.tetris.css({top: '+=' + 30}) ;
+			that.isTouchDown() ? ( clearInterval( that.timer ), that.colorMap(), that.reloadTetris() ) : that.tetris.css({top: '+=' + 30}) ;
 		}, that.moveDelayTime);
 
 	},
@@ -148,7 +170,7 @@ Tetris.prototype = {
 		for(var i = 0; i < this.colorArrayLen; i++ ){
 			row_map = this.colorArray[i][0] + row ;
 			col_map = this.colorArray[i][1] + col ;
-			if( this.mapArray[ col_map ][ row_map ] == 1 ){
+			if( this.mapArray[ row_map ][ col_map ] == 1 ){
 				return true;
 			}
 		}
@@ -156,15 +178,16 @@ Tetris.prototype = {
 	},
 
 	isTouchRight: function(){
-		var col = this.tetris.position().left / 30 + 3 ,
+		var col = this.tetris.position().left / 30 + 1 ,
 			row = this.tetris.position().top / 30 ,
 			col_map ,
 			row_map ;
-		if(col > this.size[1] - 1 ){return true;}
+		// if(col + 2 > this.size[1] - 1 ){return true;}
 		for(var i = 0; i < this.colorArrayLen; i++ ){
 			row_map = this.colorArray[i][0] + row ;
 			col_map = this.colorArray[i][1] + col ;
-			if( this.mapArray[ col_map ][ row_map ] == 1 ){
+			if(col_map > this.size[1] - 1 ){return true;}
+			if( this.mapArray[ row_map ][ col_map ] == 1 ){
 				return true;
 			}
 		}
@@ -173,13 +196,19 @@ Tetris.prototype = {
 
 	isTouchDown: function(){
 		var col = this.tetris.position().left / 30 ,
-			row = this.tetris.position().top / 30 + 1;
+			row = this.tetris.position().top / 30 + 1,
+			col_map ,
+			row_map ;
 
-		if( row + 2 > this.size[0] - 1 ){
-			return true;
-		}else{
-			return this.mapArray[row][col] == 1 || undefined ? true : false ;
+		for(var i = 0; i < this.colorArrayLen; i++ ){
+			row_map = this.colorArray[i][0] + row ;
+			col_map = this.colorArray[i][1] + col ;
+			if( row_map > this.size[0] - 1 ){return true;}
+			if( this.mapArray[ row_map ][ col_map ] == 1 ){
+				return true;
+			}
 		}
+		return false;
 		
 	},
 
@@ -191,6 +220,6 @@ Tetris.prototype = {
 
 
 var tetris = new Tetris();
-tetris.changeShape();
+// tetris.changeShape();
 
 });

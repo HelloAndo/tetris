@@ -7,11 +7,15 @@
 *{margin: 0; padding: 0;}
 .map>div:after, .tetris>div:after{content: ''; display: block; height: 0; clear: both; visibility: none;}
 .map>div>span{float: left; width: 29px; height: 29px; border-left: 1px solid #000; border-top: 1px solid #000; }
-.map{width: 450px; position: relative; top: 10px; left: 10px; border-bottom: 1px solid #000; border-right: 1px solid #000;}
-.tetris{position: absolute; z-index: 1; top: 0; left: 0; border-bottom: 1px solid #000; border-right: 1px solid #000;}
+.map>div>span:last-child{border-right: 1px solid #000;}
+.map{width: 451px; position: relative; top: 10px; left: 10px; border-bottom: 1px solid #000; }
+.tetris{position: absolute; z-index: 1; top: 0; left: 390px; width: 90px; border-bottom: 1px solid #000; border-right: 1px solid #000;}
 .tetris span{float: left; width: 29px; height: 29px; border-left: 1px solid #000; border-top: 1px solid #000;}
 .tetris span.yellow{ background-color: yellow;}
 .mapDiv span.yellow{ background-color: yellow;}
+
+.demo{position: relative; width: 100px; height: 100px; background-color: #ccc;}
+.red{position: absolute; left: 90px; top: 0px; width: 20px; height: 20px; background-color: #f00;}
 </style>
 </head>
 <body>
@@ -19,7 +23,9 @@
 	<div class="tetris"></div>
 </div>	
 
-
+<div class="demo">
+	<div class="red"></div>
+</div>
 <script src="js/jquery-1.11.3.min.js"></script>
 <script src="js/main.js"></script>
 </body>
