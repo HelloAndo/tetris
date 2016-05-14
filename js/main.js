@@ -15,10 +15,10 @@ var graphJson={
 			[0,0], [1,0], [1,1], [2,0]
 		],
 		'2': [
-			[1,0], [1,1], [1,2], [2,1]
+			[0,0], [0,1], [0,2], [1,1]
 		],
 		'3': [
-			[0,1], [1,0], [1,1], [2,1]
+			[0,2], [1,1], [1,2], [2,2]
 		],
 		'color': 'yellow'
 	}
@@ -26,17 +26,19 @@ var graphJson={
 
 function Tetris(){
 
-	this.size = [22, 15];	//游戏地图的size
-	this.tetris;		//这一回合的方块对象,jQuery对象
-	this.type = 1;		//方块形态
-	this.timer = null;		//方块自由降落计时器
-	this.shape;		//创建时的初始形态数值
-	this.colorClass;
-	this.mapArray;		//地图信息数组，有方块的格子其值为1，反之为0
-	this.speed;			//水平方向的速度，左为-1，右为1
+	this.size = [22, 15];			//游戏地图的size
+	this.mapArray;					//地图信息数组，有方块的格子其值为1，反之为0
+
+	// 当前俄罗斯方块的参数
+	this.tetris;					//这一回合的方块对象,jQuery对象
+	this.type = 1;					//方块形态
+	this.shape;						//创建时的初始形态数值
+	this.timer = null;				//方块自由降落计时器
+	this.colorClass;				//方块的颜色的类
+	this.speed;						//水平方向的速度，左为-1，右为1
 	this.moveDelayTime = 1000;		//垂直移动默认的时间间隔
-	this.colorArray;				//$('.tetris')颜色数组
-	this.colorArrayLen;				//颜色数组长度
+	this.colorArray;				//方块的颜色数组
+	this.colorArrayLen;				//方块的颜色的数组长度
 
 	// 初始化函数
 	this.createMap();
@@ -75,13 +77,14 @@ Tetris.prototype = {
 	},
 
 	createTetris: function(){
-		this.tetris = this.createSquare( $('.tetris'), 3, 3);		//创建.tetris的子元素并返回$('.tetris')
-		// this.shape = this.getRandomNum( 0, 3 );						//随机创建$('.tetris')的形态
-		this.shape = 1;	
+		this.tetris = this.createSquare( $('.tetris'), 3, 3);			//创建.tetris的子元素并返回$('.tetris')
+		this.shape = this.getRandomNum(0,3);
+		this.colorClass = graphJson[ this.type ]['color'] ;
+		this.tetris.addClass(this.colorClass);							//随机创建$('.tetris')的形态
 		this.colorArray = graphJson[ this.type ][ this.shape ] ;	
-		this.colorArrayLen = this.colorArray.length ;				//颜色数组的长度
-		this.colorTetris(  );	//根据$('.tetris')的形态绘画颜色
-		// this.autoDrop();  											//初始化方块自由落体
+		this.colorArrayLen = this.colorArray.length ;					//颜色数组的长度
+		this.changeShape();
+		this.autoDrop();  											//初始化方块自由落体
 
 	},
 
@@ -97,13 +100,10 @@ Tetris.prototype = {
 		return $obj ;
 	},
 
-	colorTetris: function(  ){
-		this.colorClass = graphJson[ this.type ]['color'] ;
-		$('.tetris span').removeClass();
-		for(var i = 0, len = this.colorArrayLen; i < len; i++ ){
-			$('.tetris>div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass( this.colorClass );
+	changeShape: function(){
 
-		}
+		this.tetris.css('transform', 'rotate(' + this.shape * 90 + 'deg)');
+		this.colorArray = graphJson[ this.type ][ this.shape ] ;
 
 	},
 
@@ -127,10 +127,9 @@ Tetris.prototype = {
 			switch( event.which ){
 				case 32:
 					that.shape++ ;
-					that.shape %= 4;
-					that.colorArray = graphJson[ that.type ][ that.shape ];
-					that.colorArrayLen = that.colorArray.length ;
-					that.colorTetris(  );
+					that.shape %= 4 ;
+					that.changeShape();
+					break;
 				case 37:
 					if( !that.isTouchLeft() ){
 						that.tetris.css('left', '-=' + 30);
@@ -220,6 +219,6 @@ Tetris.prototype = {
 
 
 var tetris = new Tetris();
-// tetris.changeShape();
+
 
 });
