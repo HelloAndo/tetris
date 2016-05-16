@@ -10,7 +10,7 @@
 .map>div>span:last-child{width: 31px; border-right: 1px solid #000;}
 .map>div:last-child>span{height: 31px; border-bottom: 1px solid #000;}
 .map{width: 451px; position: relative; top: 10px; left: 10px; }
-.tetris{position: absolute; z-index: 1; top: 0; left: 0px; width: 91px; }
+.tetris{position: absolute; z-index: 1; top: 0; left: 150px; /*width: 91px; */}
 .tetris span{float: left; width: 30px; height: 30px; }
 
 
@@ -24,6 +24,28 @@
 .tetris.yellow>div:nth-child(3)>span:nth-child(3){border-left: 1px solid #000; border-top: 1px solid #000; background-color: yellow;}
 .tetris.yellow>div:last-child>span{height: 31px; border-bottom: 1px solid #000;}
 .tetris.yellow>div:last-child>span:last-child{width: 31px; border-right: 1px solid #000;}
+
+.tetris span.red{ background-color: red;}
+.mapDiv span.red{ background-color: red;}
+
+.tetris.red>div:nth-child(2)>span:nth-child(2), .tetris.red>div:nth-child(2)>span:nth-child(3), .tetris.red>div:nth-child(3)>span:nth-child(1), .tetris.red>div:nth-child(3)>span:nth-child(2){border-left: 1px solid #000; border-top: 1px solid #000; background-color: red;}
+.tetris.red>div:nth-child(2)>span:nth-child(3){width: 31px; border-right: 1px solid #000;}
+.tetris.red>div:nth-child(3)>span:nth-child(3){border-left: 1px solid #000; border-top: 1px solid #000; }
+.tetris.red>div:last-child>span:nth-child(1), .tetris.red>div:last-child>span:nth-child(2){height: 31px; border-bottom: 1px solid #000;}
+
+.tetris span.green{ background-color: green;}
+.mapDiv span.green{ background-color: green;}
+
+.tetris.green>div:nth-child(2)>span:nth-child(1), .tetris.green>div:nth-child(2)>span:nth-child(2), .tetris.green>div:nth-child(3)>span:nth-child(2), .tetris.green>div:nth-child(3)>span:nth-child(3){border-left: 1px solid #000; border-top: 1px solid #000; background-color: green;}
+.tetris.green>div:nth-child(2)>span:nth-child(3){border-left: 1px solid #000; }
+.tetris.green>div:nth-child(3)>span:nth-child(1){border-top: 1px solid #000;}
+.tetris.green>div:last-child>span:last-child{width: 31px; border-right: 1px solid #000;}
+.tetris.green>div:last-child>span:nth-child(2), .tetris.green>div:last-child>span:nth-child(3){height: 31px; border-bottom: 1px solid #000;}
+
+
+
+
+
 </style>
 </head>
 <body>

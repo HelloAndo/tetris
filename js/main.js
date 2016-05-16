@@ -20,21 +20,46 @@ var graphJson={
 		'3': [
 			[0,2], [1,1], [1,2], [2,2]
 		],
+		'shapeNum': 4,
+		'width': '91px',
 		'color': 'yellow'
+	},
+	'2': {
+		'0': [
+			[1,1], [1,2], [2,0], [2,1]
+		],
+		'1': [
+			[0,0], [1,0], [1,1], [2,1]
+		],
+		'shapeNum': 2,
+		'width': '91px',
+		'color': 'red'
+	},
+	'3': {
+		'0': [
+			[1,0], [1,1], [2,1], [2,2]
+		],
+		'1': [
+			[0,1], [1,0], [1,1], [2,0]
+		],
+		'shapeNum': 2,
+		'width': '91px',
+		'color': 'green'
 	}
 };
 
 function Tetris(){
 
 	this.map = $('.map');
-	// this.size = [22, 15];			//游戏地图的size
-	this.size = [10, 6];	
+	this.size = [22, 15];			//游戏地图的size
+	// this.size = [10, 6];	
 	this.mapArray;					//地图信息数组，有方块的格子其值为1，反之为0
 
 	// 当前俄罗斯方块的参数
 	this.tetris;					//这一回合的方块对象,jQuery对象
 	this.type;						//方块形态
 	this.shape;						//创建时的初始形态数值
+	this.shapeNum;
 	this.timer = null;				//方块自由降落计时器
 	this.colorClass;				//方块的颜色的类
 	this.speed;						//水平方向的速度，左为-1，右为1
@@ -91,16 +116,18 @@ Tetris.prototype = {
 		this.tetris = this.createSquare( this.tetris, 3, 3);			//创建.tetris的子元素并返回$('.tetris')
 		$('.map').prepend( this.tetris );
 
-		this.type = 1;
-
-		this.shape = this.getRandomNum(0,3);
+		this.type = this.getRandomNum( 1, 3 );
+		this.shapeNum = graphJson[ this.type ]['shapeNum'] ;
+		this.shape = this.getRandomNum( 0,this.shapeNum-1 );
+		this.tetris.css('width', graphJson[ this.type ]['width'] );
+		
 		this.colorClass = graphJson[ this.type ]['color'] ;
-		this.tetris.addClass(this.colorClass);							//随机创建$('.tetris')的形态
+		this.tetris.addClass('colored ' + this.colorClass);							//随机创建$('.tetris')的形态
 		this.colorArray = graphJson[ this.type ][0] ;	
 		this.colorArrayLen = this.colorArray.length ;					//颜色数组的长度
 
 		for(var i = 0; i < this.colorArrayLen; i++ ){
-			this.tetris.find('div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass( this.colorClass );
+			this.tetris.find('div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass('colored ' +  this.colorClass );
 		}
 		// this.tetris.css('transform', 'rotate(' + this.shape * 90 + 'deg)');
 // console.log(this.shape)
@@ -127,8 +154,8 @@ Tetris.prototype = {
 		if( !this.isTouchDown() && !this.isTouchLeft() && !this.isTouchRight() ){
 			this.tetris.css('transform', 'rotate(' + this.shape * 90 + 'deg)');
 		}else{
-			this.shape += 3 ;
-			this.shape %= 4 ;
+			this.shape += ( this.shapeNum - 1 ) ;
+			this.shape %= this.shapeNum ;
 			this.colorArray = graphJson[ this.type ][ this.shape ] ;
 		}
 		
@@ -141,7 +168,7 @@ Tetris.prototype = {
 			tetrisRow = this.tetris.position().top / 30 ;
 
 		for(var i = 0; i < this.colorArrayLen; i++ ){
-			$('.mapDiv').eq( this.colorArray[i][0] + tetrisRow ).find('span').eq( this.colorArray[i][1] + tetrisCol ).addClass( this.colorClass )
+			$('.mapDiv').eq( this.colorArray[i][0] + tetrisRow ).find('span').eq( this.colorArray[i][1] + tetrisCol ).addClass('colored ' +  this.colorClass )
 																														.text(1);
 			this.mapArray[ this.colorArray[i][0] + tetrisRow ][ this.colorArray[i][1] + tetrisCol ] = 1;
 		}
@@ -150,16 +177,19 @@ Tetris.prototype = {
 
 	examinLine: function(){
 
-		var lineSum ;
+		var lineSum ,
+			numArray ;
 		for(var i = this.size[0] - 1; i >= 0; i-- ){
 			lineSum = 0 ;
 			for(var j = 0; j < this.size[1]; j++ ){
 				lineSum += this.mapArray[i][j] ;
 			}
 			if( lineSum == this.size[1] ){
-				this.map.children('.mapDiv').eq(i).find('span').removeClass( this.colorClass );
+				// numArray.push(i)
+				this.map.children('.mapDiv').eq(i).find('span').removeClass( );
 				this.map.prepend( this.map.children('.mapDiv').eq(i) );
 				this.updateMapArray();
+				i++;
 			}
 		}
 
@@ -169,7 +199,7 @@ Tetris.prototype = {
 
 		for(var i = 0; i < this.size[0]; i++ ){
 			for(var j = 0; j < this.size[1]; j++ ){
-				if( $('.mapDiv').eq(i).children('span').eq(j).hasClass( this.colorClass ) ){
+				if( $('.mapDiv').eq(i).children('span').eq(j).hasClass( 'colored' ) ){
 					this.mapArray[i][j] = 1 ;
 				}else{
 					this.mapArray[i][j] = 0 ;
@@ -186,7 +216,7 @@ Tetris.prototype = {
 			switch( event.which ){
 				case 32:
 					that.shape++ ;
-					that.shape %= 4 ;
+					that.shape %= that.shapeNum ;
 					that.drawShape();
 					break;
 				case 37:
