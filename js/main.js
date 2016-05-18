@@ -21,6 +21,7 @@ var graphJson={
 			[0,2], [1,1], [1,2], [2,2]
 		],
 		'shapeNum': 4,
+		'size': [3,3],
 		'width': '91px',
 		'color': 'yellow'
 	},
@@ -32,6 +33,7 @@ var graphJson={
 			[0,0], [1,0], [1,1], [2,1]
 		],
 		'shapeNum': 2,
+		'size': [3,3],
 		'width': '91px',
 		'color': 'red'
 	},
@@ -43,8 +45,66 @@ var graphJson={
 			[0,1], [1,0], [1,1], [2,0]
 		],
 		'shapeNum': 2,
+		'size': [3,3],
 		'width': '91px',
 		'color': 'green'
+	},
+	'4': {
+		'0': [
+			[0,0], [1,0], [2,0], [2,1]
+		],
+		'1': [
+			[0,0], [0,1], [0,2], [1,0]
+		],
+		'2': [
+			[0,1], [0,2], [1,2], [2,2]
+		],
+		'3': [
+			[1,2], [2,0], [2,1], [2,2]
+		],
+		'shapeNum': 4,
+		'size': [3,3],
+		'width': '91px',
+		'color': 'purple'
+	},
+	'5': {
+		'0': [
+			[0,1], [1,1], [2,0], [2,1]
+		],
+		'1': [
+			[0,0], [1,0], [1,1], [1,2]
+		],
+		'2': [
+			[0,1], [0,2], [1,1], [2,1]
+		],
+		'3': [
+			[1,0], [1,1], [1,2], [2,2]
+		],
+		'shapeNum': 4,
+		'size': [3,3],
+		'width': '91px',
+		'color': 'blue'
+	},
+	'6': {
+		'0': [
+			[0,0], [1,0], [2,0], [3,0], [4,0]
+		],
+		'1': [
+			[0,0], [0,1], [0,2], [0,3], [0,4]
+		],
+		'shapeNum': 2,
+		'size': [1,5],
+		'width': '151px',
+		'color': 'pink'
+	},
+	'7': {
+		'0': [
+			[0,0], [0,1], [1,0], [1,1]
+		],
+		'shapeNum': 1,
+		'size': [2,2],
+		'width': '61px',
+		'color': 'gray'
 	}
 };
 
@@ -57,6 +117,7 @@ function Tetris(){
 
 	// 当前俄罗斯方块的参数
 	this.tetris;					//这一回合的方块对象,jQuery对象
+	this.tetrisSize;
 	this.type;						//方块形态
 	this.shape;						//创建时的初始形态数值
 	this.shapeNum;
@@ -111,12 +172,14 @@ Tetris.prototype = {
 		this.initMapArray();
 	},
 
-	createTetris: function(){
+	createTetris: function(){		
+		// this.type = 5;
+		this.type = this.getRandomNum( 1, 7 );
+		this.tetrisSize = graphJson[ this.type ]['size'] ;
 		this.tetris = $('<div class="tetris"></div>');
-		this.tetris = this.createSquare( this.tetris, 3, 3);			//创建.tetris的子元素并返回$('.tetris')
+		this.tetris = this.createSquare( this.tetris, this.tetrisSize[0], this.tetrisSize[1] );			//创建.tetris的子元素并返回$('.tetris')
 		$('.map').prepend( this.tetris );
 
-		this.type = this.getRandomNum( 1, 3 );
 		this.shapeNum = graphJson[ this.type ]['shapeNum'] ;
 		this.shape = this.getRandomNum( 0,this.shapeNum-1 );
 		this.tetris.css('width', graphJson[ this.type ]['width'] );
