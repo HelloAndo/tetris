@@ -148,6 +148,20 @@ Tetris.prototype = {
 
 	},
 
+	callTetris: function(){
+
+		if( $('.next-tetris').find('.showNextTetris') == undefined ){
+			this.tetris = this.createTetris();
+			this.map.prepend( this.tetris );	
+		}else{
+			this.tetris.remove();
+			$('showNextTetris').clone().appendTo( this.map );
+			this.tetris = this.map.find('.tetris');
+		}
+		
+
+	},
+
 	nextTetris: function(){
 
 		$(window).off();
@@ -172,7 +186,9 @@ Tetris.prototype = {
 		this.initMapArray();
 	},
 
-	createTetris: function(){		
+	
+
+	createTetrisAndReturn: function(){		
 		// this.type = 5;
 		// this.type = this.getRandomNum( 1, 7 );
 		this.type = 6;
@@ -193,12 +209,9 @@ Tetris.prototype = {
 		for(var i = 0; i < this.colorArrayLen; i++ ){
 			this.tetris.find('div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass('colored ' +  this.colorClass );
 		}
-		// this.tetris.css('transform', 'rotate(' + this.shape * 90 + 'deg)');
-// console.log(this.shape)
 
 		this.drawShape();
-		this.autoDrop();  
-		$('.map').prepend( this.tetris );											//初始化方块自由落体
+		this.autoDrop();  										//初始化方块自由落体
 
 	},
 
@@ -313,7 +326,6 @@ Tetris.prototype = {
 	autoDrop: function(){
 		var that = this;
 		this.timer = setInterval(function(){
-			$('.tetris').clone().appendTo( $('.next-tetris') );
 			that.isTouchDown( 1 ) ? ( clearInterval( that.timer ), that.nextTetris() ) : that.tetris.css({top: '+=' + 30}) ;
 		}, that.moveDelayTime);
 

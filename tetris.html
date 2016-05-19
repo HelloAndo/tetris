@@ -5,6 +5,10 @@
 	<title>Tetris</title>
 <style>
 *{margin: 0; padding: 0; box-sizing:border-box;}
+.fl{float: left;}
+.fr{float: right;}
+
+.map{margin-right: 20px;}
 .map>div:after, .tetris>div:after{content: ''; display: block; height: 0; clear: both; visibility: none;}
 .map>div>span{float: left; width: 30px; height: 30px; border-left: 1px solid #000; border-top: 1px solid #000; }
 .map>div>span:last-child{width: 31px; border-right: 1px solid #000;}
@@ -70,9 +74,17 @@
 .tetris span.pink{ background-color: pink;}
 .mapDiv span.pink{ background-color: pink;}
 
-.tetris.pink>div:nth-child(1)>span:nth-child(1), .tetris.pink>div:nth-child(1)>span:nth-child(2), .tetris.pink>div:nth-child(1)>span:nth-child(3), .tetris.pink>div:nth-child(1)>span:nth-child(4), .tetris.pink>div:nth-child(1)>span:nth-child(5){border-left: 1px solid #000; border-top: 1px solid #000; background-color: pink;}
-.tetris.green>div:last-child>span:last-child{width: 31px; border-right: 1px solid #000;}
-.tetris.pink>div:last-child>span{height: 31px; border-bottom: 1px solid #000;}
+.tetris.pink>div:nth-child(1)>span:nth-child(3), 
+.tetris.pink>div:nth-child(2)>span:nth-child(3), 
+.tetris.pink>div:nth-child(3)>span:nth-child(3), 
+.tetris.pink>div:nth-child(4)>span:nth-child(3), 
+.tetris.pink>div:nth-child(5)>span:nth-child(3){border-left: 1px solid #000; border-top: 1px solid #000; background-color: pink;}
+.tetris.pink>div:nth-child(1)>span:nth-child(4), 
+.tetris.pink>div:nth-child(2)>span:nth-child(4), 
+.tetris.pink>div:nth-child(3)>span:nth-child(4), 
+.tetris.pink>div:nth-child(4)>span:nth-child(4), 
+.tetris.pink>div:nth-child(5)>span:nth-child(4){border-left: 1px solid #000;}
+.tetris.pink>div:last-child>span:nth-child(3){height: 31px; border-bottom: 1px solid #000;}
 
 /*gray*/
 .tetris span.gray{ background-color: gray;}
@@ -85,9 +97,13 @@
 </style>
 </head>
 <body>
-<div class="map" >
+<div class="map fl" >
 	<!-- <div class="tetris"></div> -->
 </div>	
+<div class="fl">
+	<h1>Next Tetris</h1>
+	<div class="next-tetris"></div>
+</div>
 
 
 <script src="js/jquery-1.11.3.min.js"></script>
