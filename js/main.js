@@ -313,7 +313,7 @@ Tetris.prototype = {
 	autoDrop: function(){
 		var that = this;
 		this.timer = setInterval(function(){
-			$('.tetris').clone().appendTo( $('.next-tetris') );
+			// $('.tetris').clone().appendTo( $('.next-tetris') );
 			that.isTouchDown( 1 ) ? ( clearInterval( that.timer ), that.nextTetris() ) : that.tetris.css({top: '+=' + 30}) ;
 		}, that.moveDelayTime);
 
