@@ -87,13 +87,13 @@ var graphJson={
 	},
 	'6': {
 		'0': [
-			[0,2], [1,2], [2,2], [3,2], [4,2]
+			[0,0], [1,0], [2,0], [3,0], [4,0]
 		],
 		'1': [
-			[2,0], [2,1], [2,2], [2,3], [2,4]
+			[0,0], [0,1], [0,2], [0,3], [0,4]
 		],
 		'shapeNum': 2,
-		'size': [5,5],
+		'size': [1,5],
 		'width': '151px',
 		'color': 'pink'
 	},
@@ -148,20 +148,6 @@ Tetris.prototype = {
 
 	},
 
-	callTetris: function(){
-
-		if( $('.next-tetris').find('.showNextTetris') == undefined ){
-			this.tetris = this.createTetris();
-			this.map.prepend( this.tetris );	
-		}else{
-			this.tetris.remove();
-			$('showNextTetris').clone().appendTo( this.map );
-			this.tetris = this.map.find('.tetris');
-		}
-		
-
-	},
-
 	nextTetris: function(){
 
 		$(window).off();
@@ -186,16 +172,13 @@ Tetris.prototype = {
 		this.initMapArray();
 	},
 
-	
-
-	createTetrisAndReturn: function(){		
-		// this.type = 5;
-		// this.type = this.getRandomNum( 1, 7 );
+	createTetris: function(){		
 		this.type = 6;
+		// this.type = this.getRandomNum( 1, 7 );
 		this.tetrisSize = graphJson[ this.type ]['size'] ;
 		this.tetris = $('<div class="tetris"></div>');
 		this.tetris = this.createSquare( this.tetris, this.tetrisSize[0], this.tetrisSize[1] );			//创建.tetris的子元素并返回$('.tetris')
-		// $('.map').prepend( this.tetris );
+		$('.map').prepend( this.tetris );
 
 		this.shapeNum = graphJson[ this.type ]['shapeNum'] ;
 		this.shape = this.getRandomNum( 0,this.shapeNum-1 );
@@ -209,9 +192,10 @@ Tetris.prototype = {
 		for(var i = 0; i < this.colorArrayLen; i++ ){
 			this.tetris.find('div').eq( this.colorArray[i][0] ).find('span').eq( this.colorArray[i][1] ).addClass('colored ' +  this.colorClass );
 		}
-
+		// this.tetris.css('transform', 'rotate(' + this.shape * 90 + 'deg)');
+// console.log(this.shape)
 		this.drawShape();
-		this.autoDrop();  										//初始化方块自由落体
+		this.autoDrop();  											//初始化方块自由落体
 
 	},
 

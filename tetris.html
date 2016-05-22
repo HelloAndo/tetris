@@ -8,13 +8,13 @@
 .fl{float: left;}
 .fr{float: right;}
 
-.map{margin-right: 20px;}
-.map>div:after, .tetris>div:after{content: ''; display: block; height: 0; clear: both; visibility: none;}
-.map>div>span{float: left; width: 30px; height: 30px; border-left: 1px solid #000; border-top: 1px solid #000; }
-.map>div>span:last-child{width: 31px; border-right: 1px solid #000;}
-.map>div:last-child>span{height: 31px; border-bottom: 1px solid #000;}
+.map{float: left; margin-right: 20px;}
+.mapDiv:after, .tetris>div:after{content: ''; display: block; height: 0; clear: both; visibility: none;}
+.mapDiv>span{float: left; width: 30px; height: 30px; border-left: 1px solid #000; border-top: 1px solid #000; }
+.mapDiv>span:last-child{width: 31px; border-right: 1px solid #000;}
+.mapDiv:last-child>span{height: 31px; border-bottom: 1px solid #000;}
 .map{width: 451px; position: relative; top: 10px; left: 10px; }
-.tetris{position: absolute; z-index: 1; top: 0; left: 150px; /*width: 91px; */}
+#tetris{position: absolute; z-index: 1; top: 0; left: 150px; /*width: 91px; */}
 .tetris span{float: left; width: 30px; height: 30px; }
 
 
@@ -94,15 +94,17 @@
 .tetris.gray>div:nth-child(1)>span:last-child, .tetris.gray>div:nth-child(2)>span:last-child{width: 31px; border-right: 1px solid #000;}
 .tetris.gray>div:last-child>span{height: 31px; border-bottom: 1px solid #000;}
 
+
+
+
 </style>
 </head>
 <body>
-<div class="map fl" >
-	<!-- <div class="tetris"></div> -->
-</div>	
-<div class="fl">
+<!-- <div class="map fl" >
+	<div class="tetris"></div>
+</div>	 -->
+<div class="fl infoBox">
 	<h1>Next Tetris</h1>
-	<div class="next-tetris"></div>
 </div>
 
 
